@@ -17,7 +17,7 @@ from dataloader import listflowfile as lt
 from dataloader import SecenFlowLoader as DA
 from models import *
 
-parser = argparse.ArgumentParser(description='PSMNet')
+parser = argparse.ArgumentParser(description='PSMNet')    # 传入参数：https://blog.csdn.net/zhangshengdong1/article/details/89576564
 parser.add_argument('--maxdisp', type=int ,default=192,
                     help='maxium disparity')
 parser.add_argument('--model', default='stackhourglass',
@@ -35,20 +35,22 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 args = parser.parse_args()
-args.cuda = not args.no_cuda and torch.cuda.is_available()
+args.cuda = not args.no_cuda and torch.cuda.is_available()    # not对args.no_cuda取反，and为与，只有True and True才是True
 
 # set gpu id used
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"    # 当有多个GPU的时候，用来调用指定GPU时的指令：https://www.cnblogs.com/ying-chease/p/9473938.html、https://blog.csdn.net/zz2230633069/article/details/81273258
+					      # 查询电脑GPU编号：https://blog.csdn.net/nima1994/article/details/83001910
 
 torch.manual_seed(args.seed)
 if args.cuda:
-    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed(args.seed)    # 为当前GPU设置随机种子，以使得结果是确定的
 
 all_left_img, all_right_img, all_left_disp, test_left_img, test_right_img, test_left_disp = lt.dataloader(args.datapath)
 
+# 溯源：SecenFlowLoader.py。自定义数据集：https://blog.csdn.net/tsq292978891/article/details/79414512
 TrainImgLoader = torch.utils.data.DataLoader(
          DA.myImageFloder(all_left_img,all_right_img,all_left_disp, True), 
-         batch_size= 12, shuffle= True, num_workers= 8, drop_last=False)
+         batch_size= 12, shuffle= True, num_workers= 8, drop_last=False)    
 
 TestImgLoader = torch.utils.data.DataLoader(
          DA.myImageFloder(test_left_img,test_right_img,test_left_disp, False), 
@@ -56,14 +58,14 @@ TestImgLoader = torch.utils.data.DataLoader(
 
 
 if args.model == 'stackhourglass':
-    model = stackhourglass(args.maxdisp)
+    model = stackhourglass(args.maxdisp)    # python class类的性质，传入指定参数。溯源：stackhourglass
 elif args.model == 'basic':
     model = basic(args.maxdisp)
 else:
     print('no model')
 
 if args.cuda:
-    model = nn.DataParallel(model)
+    model = nn.DataParallel(model)    # DataParallel允许多GPU并行训练：https://blog.csdn.net/qq_19598705/article/details/80396325
     model.cuda()
 
 if args.loadmodel is not None:
