@@ -34,7 +34,7 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='enables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
-args = parser.parse_args()
+args = parser.parse_args()    # 需要修改，在此处添加标签的值
 args.cuda = not args.no_cuda and torch.cuda.is_available()    # not对args.no_cuda取反，and为与，只有True and True才是True
 
 # set gpu id used
@@ -66,9 +66,9 @@ else:
 
 if args.cuda:
     model = nn.DataParallel(model)    # DataParallel允许多GPU并行训练：https://blog.csdn.net/qq_19598705/article/details/80396325
-    model.cuda()
+    model.cuda()		      # 选用GPU
 
-if args.loadmodel is not None:
+if args.loadmodel is not None:    # 加载预训练模型：传入的参数为路径：https://www.cnblogs.com/nkh222/p/7656623.html
     state_dict = torch.load(args.loadmodel)
     model.load_state_dict(state_dict['state_dict'])
 
