@@ -1,3 +1,4 @@
+# 代码作用：前向传播，计算得到视差图。实验网络视差图计算效果
 from __future__ import print_function
 import argparse
 import os
@@ -24,13 +25,13 @@ from models import *
 parser = argparse.ArgumentParser(description='PSMNet')
 parser.add_argument('--KITTI', default='2015',
                     help='KITTI version')
-parser.add_argument('--datapath', default='/media/jiaren/ImageNet/data_scene_flow_2015/testing/',
+parser.add_argument('--datapath', default='/media/jiaren/ImageNet/data_scene_flow_2015/testing/',    # 修改的地方1：测试集路径，如:cch/桌面/KITTI2015/testing/
                     help='select model')
-parser.add_argument('--loadmodel', default=None,
+parser.add_argument('--loadmodel', default=None,  # 修改的地方2：预训练网络路径，如：cch/桌面/pretrained_model_KITTI2015.tar
                     help='loading model')
 parser.add_argument('--model', default='stackhourglass',
                     help='select model')
-parser.add_argument('--maxdisp', type=int, default=192,
+parser.add_argument('--maxdisp', type=int, default=192,    # 修改的地方3：可以更改视差范围，降低显存需求量。
                     help='maxium disparity')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='enables CUDA training')
