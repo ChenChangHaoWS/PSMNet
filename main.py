@@ -78,15 +78,15 @@ optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))
 
 def train(imgL,imgR, disp_L):
         model.train()
-        imgL   = Variable(torch.FloatTensor(imgL))
-        imgR   = Variable(torch.FloatTensor(imgR))   
+        imgL   = Variable(torch.FloatTensor(imgL))    # torch.FloatTensor('变量')将变量转换为张量，torch自称神经网络界的numpy，可以将torch产生的tensor放在GPU中加速，numpy可将array放在cpu中加速
+        imgR   = Variable(torch.FloatTensor(imgR))    # Variable相当于一个Wraper，将tensor传输到Pytorch计算图中
         disp_L = Variable(torch.FloatTensor(disp_L))
 
         if args.cuda:
-            imgL, imgR, disp_true = imgL.cuda(), imgR.cuda(), disp_L.cuda()
+            imgL, imgR, disp_true = imgL.cuda(), imgR.cuda(), disp_L.cuda()    # Variable(tensor).cuda()将tensor通过cuda加速载入到对应GPU计算卡中，disp_true是一个元组，保存了tensor以及对应加载的GPU ip
 
        #---------
-        mask = disp_true < args.maxdisp
+        mask = disp_true < args.maxdisp # ？？？一个元组一个int如何比较大小
         mask.detach_()
         #----
         optimizer.zero_grad()
@@ -139,14 +139,14 @@ def adjust_learning_rate(optimizer, epoch):
 
 def main():
 
-	start_full_time = time.time()
+	start_full_time = time.time()    # 记录当前系统时间，用于后面计算整体运行时间
 	for epoch in range(1, args.epochs+1):
 	   print('This is %d-th epoch' %(epoch))
 	   total_train_loss = 0
 	   adjust_learning_rate(optimizer,epoch)
 
 	   ## training ##
-	   for batch_idx, (imgL_crop, imgR_crop, disp_crop_L) in enumerate(TrainImgLoader):
+	   for batch_idx, (imgL_crop, imgR_crop, disp_crop_L) in enumerate(TrainImgLoader):    # enumerate()用于将一个可遍历的数据对象组合为一个索引序列：https://www.runoob.com/python/python-func-enumerate.html
 	     start_time = time.time()
 
 	     loss = train(imgL_crop,imgR_crop, disp_crop_L)
