@@ -86,10 +86,10 @@ def train(imgL,imgR, disp_L):
             imgL, imgR, disp_true = imgL.cuda(), imgR.cuda(), disp_L.cuda()    # Variable(tensor).cuda()将tensor通过cuda加速载入到对应GPU计算卡中，disp_true是一个元组，保存了tensor以及对应加载的GPU ip
 
        #---------
-        mask = disp_true < args.maxdisp # ？？？一个元组一个int如何比较大小
+        mask = disp_true < args.maxdisp 
         mask.detach_()
         #----
-        optimizer.zero_grad()
+        optimizer.zero_grad()    # pytorch中backward()当网络参量进行反馈时，梯度是被累积的而不是被替换掉；但是在每一个batch时毫无疑问并不需要将两个batch的梯度混合起来累积，因此这里就需要每个batch设置一遍zero_grad 
         
         if args.model == 'stackhourglass':
             output1, output2, output3 = model(imgL,imgR)
