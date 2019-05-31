@@ -70,7 +70,7 @@ if args.cuda:
 
 if args.loadmodel is not None:    # 加载预训练模型：传入的参数为路径：https://www.cnblogs.com/nkh222/p/7656623.html
     state_dict = torch.load(args.loadmodel)
-    model.load_state_dict(state_dict['state_dict'])
+    model.load_state_dict(state_dict['state_dict'])    # 加载预训练网络模型的参数
 
 print('Number of model parameters: {}'.format(sum([p.data.nelement() for p in model.parameters()])))
 
@@ -158,7 +158,7 @@ def main():
 	   savefilename = args.savemodel+'/checkpoint_'+str(epoch)+'.tar'
 	   torch.save({
 		    'epoch': epoch,
-		    'state_dict': model.state_dict(),
+		    'state_dict': model.state_dict(),    # 保存已经训练得到的网络参数
                     'train_loss': total_train_loss/len(TrainImgLoader),
 		}, savefilename)
 
