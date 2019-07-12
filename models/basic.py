@@ -14,8 +14,8 @@ class PSMNet(nn.Module):
         self.feature_extraction = feature_extraction()
 
 ########
-        self.dres0 = nn.Sequential(convbn_3d(64, 32, 3, 1, 1),
-                                     nn.ReLU(inplace=True),
+        self.dres0 = nn.Sequential(convbn_3d(64, 32, 3, 1, 1),      # convbn和convbn_3d的定义在submodule.py中，类中是可以调用外部函数的
+                                     nn.ReLU(inplace=True),     # inplace覆盖运算，节省内存：https://www.cnblogs.com/wanghui-garcia/p/10642665.html
                                      convbn_3d(32, 32, 3, 1, 1),
                                      nn.ReLU(inplace=True))
 
