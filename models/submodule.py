@@ -1,3 +1,4 @@
+# 基本2D、3D卷积层和前端特征提取子模块（feature_extraction）都在此中定义
 from __future__ import print_function
 import torch
 import torch.nn as nn
@@ -107,7 +108,7 @@ class feature_extraction(nn.Module):
                           kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(planes * block.expansion),)
 
-        layers = []
+        layers = [] # 定义列表
         layers.append(block(self.inplanes, planes, stride, downsample, pad, dilation))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
