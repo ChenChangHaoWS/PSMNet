@@ -74,12 +74,12 @@ class feature_extraction(nn.Module):
                                        nn.ReLU(inplace=True),
                                        convbn(32, 32, 3, 1, 1, 1),
                                        nn.ReLU(inplace=True))
-
+# 此处定义的四个residual blocks（但是末尾两个的dila与论文不一致）
         self.layer1 = self._make_layer(BasicBlock, 32, 3, 1,1,1)
         self.layer2 = self._make_layer(BasicBlock, 64, 16, 2,1,1) 
         self.layer3 = self._make_layer(BasicBlock, 128, 3, 1,1,1)
         self.layer4 = self._make_layer(BasicBlock, 128, 3, 1,1,2)
-
+# SPP module
         self.branch1 = nn.Sequential(nn.AvgPool2d((64, 64), stride=(64,64)),
                                      convbn(128, 32, 1, 1, 0, 1),
                                      nn.ReLU(inplace=True))
@@ -95,7 +95,7 @@ class feature_extraction(nn.Module):
         self.branch4 = nn.Sequential(nn.AvgPool2d((8, 8), stride=(8,8)),
                                      convbn(128, 32, 1, 1, 0, 1),
                                      nn.ReLU(inplace=True))
-
+# 生成cost volume前的最后一层卷积
         self.lastconv = nn.Sequential(convbn(320, 128, 3, 1, 1, 1),
                                       nn.ReLU(inplace=True),
                                       nn.Conv2d(128, 32, kernel_size=1, padding=0, stride = 1, bias=False))
@@ -114,7 +114,7 @@ class feature_extraction(nn.Module):
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes,1,None,pad,dilation))
 
-        return nn.Sequential(*layers)
+        return nn.Sequential(*layers)   # *layers使layers可以不断接受新参数https://blog.csdn.net/u013548568/article/details/80294708
 
     def forward(self, x):
         output      = self.firstconv(x)
