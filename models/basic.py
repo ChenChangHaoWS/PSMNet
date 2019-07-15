@@ -64,8 +64,9 @@ class PSMNet(nn.Module):
  
         #matching
         cost = Variable(torch.FloatTensor(refimg_fea.size()[0], refimg_fea.size()[1]*2, self.maxdisp/4,  refimg_fea.size()[2],  refimg_fea.size()[3]).zero_(), volatile= not self.training).cuda()
-
-        for i in range(self.maxdisp/4):
+# cost变量是cost volume的容器，torch.FloatTensor(**).zero_()类似于np.zeros()，用于生成**尺寸的的容器。此处是height*weight*disparity*featuresizeviolated判断是否需要求梯度https://pytorch-cn.readthedocs.io/zh/latest/notes/autograd/
+# refimg_fea.size()[3]暂时是个未解之谜。。。
+        for i in range(self.maxdisp/4): #因为feature_extraction后输出的图像尺寸长宽都缩小了1/4，所以现在的视差1就是真实的4
             if i > 0 :
              cost[:, :refimg_fea.size()[1], i, :,i:]   = refimg_fea[:,:,:,i:]
              cost[:, refimg_fea.size()[1]:, i, :,i:] = targetimg_fea[:,:,:,:-i]
@@ -73,7 +74,7 @@ class PSMNet(nn.Module):
              cost[:, :refimg_fea.size()[1], i, :,:]   = refimg_fea
              cost[:, refimg_fea.size()[1]:, i, :,:]   = targetimg_fea
         cost = cost.contiguous()
-
+# 防止cost volume因运算过程中其他量的改变（如refimg_fea等）而发生变化，起到重新拷贝赋予新的内存空间的作用：https://blog.csdn.net/gdymind/article/details/82662502
         cost0 = self.dres0(cost)
         cost0 = self.dres1(cost0) + cost0
         cost0 = self.dres2(cost0) + cost0 
