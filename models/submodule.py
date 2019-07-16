@@ -126,7 +126,7 @@ class feature_extraction(nn.Module):
 
         output_branch1 = self.branch1(output_skip)
         output_branch1 = F.upsample(output_branch1, (output_skip.size()[2],output_skip.size()[3]),mode='bilinear')
-# 此处output_skip.size()[3]未接之谜。。。
+# 此处output_skip.size()[3]。feature map（batch * channel * height * width）
         output_branch2 = self.branch2(output_skip)
         output_branch2 = F.upsample(output_branch2, (output_skip.size()[2],output_skip.size()[3]),mode='bilinear')
 
