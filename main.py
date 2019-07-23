@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import division # 解决py2.7双GPU占用率不同问题
 import argparse
 import os
 import random
